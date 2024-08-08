@@ -15,3 +15,4 @@ Route::get('/', function () {
 
 Route::get('my-details', [FormController::class, 'create'])->name('myDetails');
 Route::post('add-details', [FormController::class, 'store'])->name('addDetails');
+Route::put('edit-details', [FormController::class, 'update'])->name('editDetails');

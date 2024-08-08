@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormCreateRequest;
+use App\Http\Requests\FormUpdateRequest;
 use App\Models\Form;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -40,6 +40,28 @@ class FormController extends Controller
 
         // Create the form data
         $formData = Form::create($validated);
+
+        return Inertia::render('Form', [
+            'formData' => $formData,
+        ]);
+    }
+
+    /**
+     * Update form data with payload from frontend.
+     */
+    public function update(FormUpdateRequest $request): Response
+    {
+        // Validate the form data
+        $validated = $request->validated();
+
+        // Get the form data ID from the validated form
+        $id = $validated['id'];
+
+        // Find the form data by ID
+        $formData = Form::findOrFail($id);
+
+        // Create the form data
+        $formData->update($validated);
 
         return Inertia::render('Form', [
             'formData' => $formData,
