@@ -1,58 +1,71 @@
 <script setup lang="ts">
-import Toast from '@/Components/Toast.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import Toast from "@/Components/Toast.vue";
+import { FormData } from "@/types/formData";
+import { Head, Link, router } from "@inertiajs/vue3";
+import { reactive } from "vue";
 
 const props = defineProps<{
-    formData: {
-        id: number | null;
-        name: string;
-        email: string;
-        phone: string;
-        house_number: string;
-        address_1: string;
-        address_2: string;
-        postcode: string;
-        city: string;
-        state: string;
-        country: string;
-    }
+    formData: FormData;
 }>();
 
 const form = reactive({ ...props.formData });
 
 const toast = reactive<{ show: boolean; message: string; success: boolean; }>({
     show: false,
-    message: '',
-    success: false
+    message: "",
+    success: false,
 });
-
 
 /**
  * Submit the form data to the server.
  */
 const submitForm = () => {
     if (form.id === null) {
-        router.post(route('addDetails'), form, {
-            onSuccess: () => {
-                showToast('Details saved successfully', true);
+        router.post(route("addDetails"), form, {
+            onSuccess: (res) => {
+                showToast("Details saved successfully", true);
+                form.id = (res.props.formData as FormData).id;
             },
             onError: () => {
-                showToast('Details failed to save', false);
-            }
+                showToast("Details failed to save", false);
+            },
         });
-    } else if (typeof form.id === 'number') {
-        router.put(route('editDetails'), form, {
+    } else if (typeof form.id === "number") {
+        router.put(route("editDetails"), form, {
             onSuccess: () => {
-                showToast('Details updated successfully', true);
+                showToast("Details updated successfully", true);
             },
             onError: () => {
-                showToast('Details failed to update', false);
-            }
+                showToast("Details failed to update", false);
+            },
         });
     }
 };
 
+/**
+ * Delete the user's details from the server.
+ */
+const handleDelete = () => {
+    router.delete(route("deleteDetails", { id: form.id }), {
+        onSuccess: () => {
+            showToast("Details deleted successfully", true);
+            form.id = null;
+            form.name = "";
+            form.email = "";
+            form.phone = "";
+            form.house_number = "";
+            form.address_1 = "";
+            form.address_2 = "";
+            form.postcode = "";
+            form.city = "";
+            form.state = "";
+            form.country = "";
+        },
+        onError: () => {
+            showToast("Details failed to delete", false);
+        },
+    });
+};
 
 /**
  * Show a toast notification with the given message and type.
@@ -77,18 +90,22 @@ const showToast = (message: string, success: boolean) => {
         <main class="flex-grow flex flex-col items-center justify-center">
             <Toast v-if="toast.show" :message="toast.message" :success="toast.success" />
             <div class="flex flex-col w-5/6 p-8 rounded-2xl bg-white shadow-2xl">
-                <Link :href="route('home')"
-                    class="w-min py-2 px-6 rounded-md bg-blue-400 hover:bg-blue-300 active:bg-blue-500" as="button">
-                Back
-                </Link>
+                <div class="flex justify-between">
+                    <Link :href="route('home')"
+                        class="w-min py-2 px-6 rounded-md bg-blue-400 hover:bg-blue-300 active:bg-blue-500" as="button">
+                    Back
+                    </Link>
+                    <button class="w-min py-2 px-6 rounded-md bg-red-400 hover:bg-red-300 active:bg-red-500"
+                        v-if="form.id !== null" @click="handleDelete" as="button">
+                        Delete
+                    </button>
+                </div>
                 <img class="w-24 mx-auto rounded-full" src="../../images/Profile_avatar_placeholder.png"
-                    alt="placeholder avatar image">
+                    alt="placeholder avatar image" />
                 <h1 class="text-center text-2xl">My Details</h1>
                 <form class="flex flex-col" @submit.prevent="submitForm">
                     <fieldset class="mt-6">
-                        <legend class="mb-6">
-                            Customer Information
-                        </legend>
+                        <legend class="mb-6">Customer Information</legend>
                         <div class="flex flex-col gap-3">
                             <div class="relative z-0 w-96">
                                 <input
@@ -117,9 +134,7 @@ const showToast = (message: string, success: boolean) => {
                             </div>
                         </div>
                         <fieldset class="flex flex-row w-full mt-8 justify-between">
-                            <legend class="mb-6">
-                                Address
-                            </legend>
+                            <legend class="mb-6">Address</legend>
                             <div class="flex flex-col w-5/12 gap-3">
                                 <div class="relative z-0 w-40">
                                     <input
@@ -128,8 +143,7 @@ const showToast = (message: string, success: boolean) => {
                                         placeholder="" required />
                                     <label
                                         class="peer-focus/housenum:font-medium absolute text-base text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus/housenum:left-0 peer-focus/housenum:text-blue-600 peer-placeholder-shown/housenum:scale-100 peer-placeholder-shown/housenum:translate-y-0 peer-focus/housenum:scale-75 peer-focus/housenum:-translate-y-6"
-                                        for="houseNumber">House/Building
-                                        No.</label>
+                                        for="houseNumber">House/Building No.</label>
                                 </div>
                                 <div class="relative z-0 w-full">
                                     <input
@@ -189,8 +203,9 @@ const showToast = (message: string, success: boolean) => {
                             </div>
                         </fieldset>
                     </fieldset>
-                    <button class="h-10 w-32 mt-8 mx-auto rounded text-white text-lg bg-blue-500" type="submit">Save
-                        Details</button>
+                    <button class="h-10 w-32 mt-8 mx-auto rounded text-white text-lg bg-blue-500" type="submit">
+                        Save Details
+                    </button>
                 </form>
             </div>
         </main>

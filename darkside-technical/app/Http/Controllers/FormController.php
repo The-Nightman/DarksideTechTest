@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FormCreateRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Models\Form;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -65,6 +66,27 @@ class FormController extends Controller
 
         return Inertia::render('Form', [
             'formData' => $formData,
+        ]);
+    }
+
+    /**
+     * Update form data with payload from frontend.
+     */
+    public function destroy(Request $request): Response
+    {
+        // Validate to make sure the id is present
+        $validated = $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        // Find the form data by ID
+        $formData = Form::findOrFail($validated['id']);
+
+        // Delete the form data
+        $formData->delete();
+
+        return Inertia::render('Form', [
+            'message' => 'Form data deleted successfully.',
         ]);
     }
 }
