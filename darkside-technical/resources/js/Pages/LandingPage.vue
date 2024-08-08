@@ -18,7 +18,7 @@ defineProps<{
                     alt="placeholder avatar image">
                 <h1 class="text-center text-2xl">My Profile</h1>
                 <p class="text-center text-lg text-gray-500">Welcome to your profile page</p>
-                <Link :href="route('openDetails')"
+                <Link :href="route('myDetails')"
                     class="mt-12 mx-auto py-2 px-6 rounded-md bg-blue-400 hover:bg-blue-300 active:bg-blue-500"
                     as="button">
                 Edit My Details

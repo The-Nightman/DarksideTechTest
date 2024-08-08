@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import Toast from '@/Components/Toast.vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 
 const props = defineProps<{
     formData: {
-        id: number;
+        id: number | null;
         name: string;
         email: string;
         phone: string;
@@ -20,18 +21,54 @@ const props = defineProps<{
 
 const form = reactive({ ...props.formData });
 
+const toast = reactive<{ show: boolean; message: string; success: boolean; }>({
+    show: false,
+    message: '',
+    success: false
+});
+
+
+/**
+ * Submit the form data to the server.
+ */
 const submitForm = () => {
-    console.log(form);
-    // Submit form data to the server, not yet implemented
+    if (form.id === null) {
+        router.post(route('addDetails'), form, {
+            onSuccess: () => {
+                showToast('Details saved successfully', true);
+            },
+            onError: () => {
+                showToast('Details failed to update', false);
+            }
+        });
+    } else if (typeof form.id === 'number') {
+        // not yet implemented
+    }
 };
 
+
+/**
+ * Show a toast notification with the given message and type.
+ * @param {string} message - The message to display in the toast.
+ * @param {string} type - The type of the toast (e.g., 'success', 'error').
+ */
+const showToast = (message: string, success: boolean) => {
+    toast.show = true;
+    toast.message = message;
+    toast.success = success;
+    // Hide the toast after 4 seconds to give the user enough time to read it
+    setTimeout(() => {
+        toast.show = false;
+    }, 4000);
+};
 </script>
 
 <template>
 
     <Head title="My Details" />
     <div class="h-screen flex flex-col bg-gradient-to-tr from-blue-500 to-pink-500">
-        <main class="flex-grow flex items-center justify-center">
+        <main class="flex-grow flex flex-col items-center justify-center">
+            <Toast v-if="toast.show" :message="toast.message" :success="toast.success" />
             <div class="flex flex-col w-5/6 p-8 rounded-2xl bg-white shadow-2xl">
                 <Link :href="route('home')"
                     class="w-min py-2 px-6 rounded-md bg-blue-400 hover:bg-blue-300 active:bg-blue-500" as="button">
@@ -108,7 +145,8 @@ const submitForm = () => {
                                 <div class="relative z-0 w-full">
                                     <input
                                         class="block py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 focus:outline-none focus:ring-0 focus:border-blue-600 peer/postcode"
-                                        v-model="form.postcode" type="text" id="postcode" name="postcode" placeholder="" required />
+                                        v-model="form.postcode" type="text" id="postcode" name="postcode" placeholder=""
+                                        required />
                                     <label
                                         class="peer-focus/postcode:font-medium absolute text-base text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus/postcode:left-0 peer-focus/postcode:text-blue-600 peer-placeholder-shown/postcode:scale-100 peer-placeholder-shown/postcode:translate-y-0 peer-focus/postcode:scale-75 peer-focus/postcode:-translate-y-6"
                                         for="postcode">Postcode</label>
@@ -126,7 +164,8 @@ const submitForm = () => {
                                 <div class="relative z-0 w-full">
                                     <input
                                         class="block py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 focus:outline-none focus:ring-0 focus:border-blue-600 peer/countyState"
-                                        v-model="form.state" type="text" id="countyState" name="countyState" placeholder="" required />
+                                        v-model="form.state" type="text" id="countyState" name="countyState"
+                                        placeholder="" required />
                                     <label
                                         class="peer-focus/countyState:font-medium absolute text-base text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus/countyState:left-0 peer-focus/countyState:text-blue-600 peer-placeholder-shown/countyState:scale-100 peer-placeholder-shown/countyState:translate-y-0 peer-focus/countyState:scale-75 peer-focus/countyState:-translate-y-6"
                                         for="countyState">County/State</label>
@@ -134,7 +173,8 @@ const submitForm = () => {
                                 <div class="relative z-0 w-full">
                                     <input
                                         class="block py-2.5 px-0 w-full text-base text-gray-900 bg-transparent border-0 border-b-2 focus:outline-none focus:ring-0 focus:border-blue-600 peer/country"
-                                        v-model="form.country" type="text" id="country" name="country" placeholder="" required />
+                                        v-model="form.country" type="text" id="country" name="country" placeholder=""
+                                        required />
                                     <label
                                         class="peer-focus/country:font-medium absolute text-base text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus/country:left-0 peer-focus/country:text-blue-600 peer-placeholder-shown/country:scale-100 peer-placeholder-shown/country:translate-y-0 peer-focus/country:scale-75 peer-focus/country:-translate-y-6"
                                         for="country">Country</label>
