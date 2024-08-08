@@ -38,11 +38,18 @@ const submitForm = () => {
                 showToast('Details saved successfully', true);
             },
             onError: () => {
-                showToast('Details failed to update', false);
+                showToast('Details failed to save', false);
             }
         });
     } else if (typeof form.id === 'number') {
-        // not yet implemented
+        router.put(route('editDetails'), form, {
+            onSuccess: () => {
+                showToast('Details updated successfully', true);
+            },
+            onError: () => {
+                showToast('Details failed to update', false);
+            }
+        });
     }
 };
 
@@ -50,7 +57,7 @@ const submitForm = () => {
 /**
  * Show a toast notification with the given message and type.
  * @param {string} message - The message to display in the toast.
- * @param {string} type - The type of the toast (e.g., 'success', 'error').
+ * @param {boolean} success - The type of the toast (success = true, error = fail).
  */
 const showToast = (message: string, success: boolean) => {
     toast.show = true;
