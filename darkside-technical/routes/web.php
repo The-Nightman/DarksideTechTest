@@ -13,4 +13,5 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('openDetails', [FormController::class, 'create'])->name('openDetails');
+Route::get('my-details', [FormController::class, 'create'])->name('myDetails');
+Route::post('add-details', [FormController::class, 'store'])->name('addDetails');
