@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('form', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('house_number');
-            $table->string('address_1');
-            $table->string('address_2');
-            $table->string('postcode');
-            $table->string('city');
-            $table->string('state');
-            $table->string('country');
+            $table->string('name')->default('');
+            $table->string('email')->default('');;
+            $table->string('phone')->default('');;
+            $table->string('house_number')->default('');;
+            $table->string('address_1')->default('');;
+            $table->string('address_2')->default('');;
+            $table->string('postcode')->default('');;
+            $table->string('city')->default('');;
+            $table->string('state')->default('');;
+            $table->string('country')->default('');;
             $table->timestamps();
         });
     }

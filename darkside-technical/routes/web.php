@@ -13,4 +13,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('openDetails', [FormController::class, 'create'])->name('openDetails');
+Route::get('my-details', [FormController::class, 'create'])->name('myDetails');
+Route::post('add-details', [FormController::class, 'store'])->name('addDetails');
+Route::put('edit-details', [FormController::class, 'update'])->name('editDetails');
+Route::delete('delete-details', [FormController::class, 'destroy'])->name('deleteDetails');
