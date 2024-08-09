@@ -6,6 +6,7 @@ use App\Http\Requests\FormCreateRequest;
 use App\Http\Requests\FormUpdateRequest;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,23 +35,21 @@ class FormController extends Controller
     /**
      * Create form data with payload from frontend.
      */
-    public function store(FormCreateRequest $request): Response
+    public function store(FormCreateRequest $request): RedirectResponse
     {
         // Validate the form data
         $validated = $request->validated();
 
         // Create the form data
-        $formData = Form::create($validated);
+        Form::create($validated);
 
-        return Inertia::render('Form', [
-            'formData' => $formData,
-        ]);
+        return to_route('myDetails');
     }
 
     /**
      * Update form data with payload from frontend.
      */
-    public function update(FormUpdateRequest $request): Response
+    public function update(FormUpdateRequest $request): RedirectResponse
     {
         // Validate the form data
         $validated = $request->validated();
@@ -64,15 +63,13 @@ class FormController extends Controller
         // Create the form data
         $formData->update($validated);
 
-        return Inertia::render('Form', [
-            'formData' => $formData,
-        ]);
+        return to_route('myDetails');
     }
 
     /**
      * Update form data with payload from frontend.
      */
-    public function destroy(Request $request): Response
+    public function destroy(Request $request): RedirectResponse
     {
         // Validate to make sure the id is present
         $validated = $request->validate([
@@ -85,8 +82,6 @@ class FormController extends Controller
         // Delete the form data
         $formData->delete();
 
-        return Inertia::render('Form', [
-            'message' => 'Form data deleted successfully.',
-        ]);
+        return to_route('myDetails');
     }
 }
