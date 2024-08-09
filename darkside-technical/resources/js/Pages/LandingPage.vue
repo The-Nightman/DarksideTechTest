@@ -11,7 +11,7 @@ defineProps<{
 <template>
 
     <Head title="My Profile" />
-    <div class="h-screen flex flex-col bg-gradient-to-tr from-blue-500 to-pink-500">
+    <div class="min-h-screen flex flex-col bg-gradient-to-tr from-blue-500 to-pink-500">
         <main class="flex-grow flex items-center justify-center">
             <div class="flex flex-col w-5/6 p-8 rounded-2xl bg-white shadow-2xl">
                 <img class="w-24 mx-auto rounded-full" src="../../images/Profile_avatar_placeholder.png"
